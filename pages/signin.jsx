@@ -8,9 +8,10 @@ import PasswordIcon from "@mui/icons-material/Password";
 import LoginIcon from "@mui/icons-material/Login";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import NextLink from "next/link";
 import { useState } from "react";
 
-const signin = () => {
+const SignIn = () => {
   const [userInput, setUserInput] = useState({ email: "", password: "" });
 
   const handleInputChange = (e) => {
@@ -44,72 +45,77 @@ const signin = () => {
           py: 5,
         }}
       >
-        <Typography variant="h4" align="center" component="h1" sx={{ mb: 4 }}>
-          Sign In
-        </Typography>
-        <TextField
-          id="outlined-email"
-          name="email"
-          label="Email"
-          variant="outlined"
-          type="email"
-          placeholder="john.doe@gmail.com"
-          required
-          fullWidth
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <MailOutlineRoundedIcon />
-              </InputAdornment>
-            ),
-          }}
-          onChange={handleInputChange}
-          value={userInput.email}
-        />
-        <TextField
-          id="outlined-password"
-          name="password"
-          label="Password"
-          variant="outlined"
-          type="password"
-          placeholder="*******"
-          required
-          fullWidth
-          sx={{ mt: 3 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <PasswordIcon />
-              </InputAdornment>
-            ),
-          }}
-          onChange={handleInputChange}
-          value={userInput.password}
-        />
-        <Button
-          variant="outlined"
-          type="submit"
-          size="large"
-          endIcon={<LoginIcon />}
-          fullWidth
-          sx={{ mt: 3 }}
-          onClick={handleSubmit}
-        >
-          Sign In
-        </Button>
-        <Typography
-          paragraph
-          align="center"
-          sx={{ mt: 3, mb: 0.5, color: "text.secondary" }}
-        >
-          Or
-        </Typography>
-        <Typography paragraph align="center" sx={{ color: "text.secondary" }}>
-          Don't have an account? <Link href="/signup">Sign Up</Link>
-        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Typography variant="h4" align="center" component="h1" sx={{ mb: 4 }}>
+            Sign In
+          </Typography>
+          <TextField
+            id="outlined-email"
+            name="email"
+            label="Email"
+            variant="outlined"
+            type="email"
+            placeholder="john.doe@gmail.com"
+            required
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <MailOutlineRoundedIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleInputChange}
+            value={userInput.email}
+          />
+          <TextField
+            id="outlined-password"
+            name="password"
+            label="Password"
+            variant="outlined"
+            type="password"
+            placeholder="*******"
+            required
+            fullWidth
+            sx={{ mt: 3 }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PasswordIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleInputChange}
+            value={userInput.password}
+          />
+          <Button
+            variant="outlined"
+            type="submit"
+            size="large"
+            endIcon={<LoginIcon />}
+            fullWidth
+            sx={{ mt: 3 }}
+            // onClick={handleSubmit}
+          >
+            Sign Up
+          </Button>
+          <Typography
+            paragraph
+            align="center"
+            sx={{ mt: 3, mb: 0.5, color: "text.secondary" }}
+          >
+            Or
+          </Typography>
+          <Typography paragraph align="center" sx={{ color: "text.secondary" }}>
+            Don't have an account?{" "}
+            <NextLink href="/signup">
+              <Link>Sign Up</Link>
+            </NextLink>
+          </Typography>
+        </form>
       </Box>
     </Container>
   );
 };
 
-export default signin;
+export default SignIn;
