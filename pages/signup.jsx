@@ -10,23 +10,29 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import NextLink from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const SignUp = () => {
-  const [userInput, setUserInput] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPass: "",
-  });
+  // const [userInput, setUserInput] = useState({
+  //   name: "",
+  //   email: "",
+  //   password: "",
+  //   confirmPass: "",
+  // });
 
-  const handleInputChange = (e) => {
-    setUserInput({ ...userInput, [e.target.name]: e.target.value });
-  };
+  // const handleInputChange = (e) => {
+  //   setUserInput({ ...userInput, [e.target.name]: e.target.value });
+  // };
+
+  const { signUpInput, handleSignUpInputChange, handleAuthentication } =
+    useContext(AuthContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("submitted", userInput);
+    // console.log("submitted", userInput);
+    console.log("submitted signUpInput", signUpInput);
+    handleAuthentication("SIGN_UP");
   };
 
   return (
@@ -52,7 +58,7 @@ const SignUp = () => {
         }}
       >
         <form onSubmit={handleSubmit}>
-          <Typography variant="h4" align="center" component="h1" sx={{ mb: 4 }}>
+          <Typography variant="h5" align="center" component="h1" sx={{ mb: 4 }}>
             Sign Up
           </Typography>
           <TextField
@@ -71,8 +77,8 @@ const SignUp = () => {
                 </InputAdornment>
               ),
             }}
-            onChange={handleInputChange}
-            value={userInput.name}
+            onChange={handleSignUpInputChange}
+            value={signUpInput.name}
           />
           <TextField
             id="outlined-email"
@@ -91,8 +97,8 @@ const SignUp = () => {
                 </InputAdornment>
               ),
             }}
-            onChange={handleInputChange}
-            value={userInput.email}
+            onChange={handleSignUpInputChange}
+            value={signUpInput.email}
           />
           <TextField
             id="outlined-password"
@@ -111,8 +117,8 @@ const SignUp = () => {
                 </InputAdornment>
               ),
             }}
-            onChange={handleInputChange}
-            value={userInput.password}
+            onChange={handleSignUpInputChange}
+            value={signUpInput.password}
           />
           <TextField
             id="outlined-confirm-password"
@@ -131,8 +137,8 @@ const SignUp = () => {
                 </InputAdornment>
               ),
             }}
-            onChange={handleInputChange}
-            value={userInput.confirmPassword}
+            onChange={handleSignUpInputChange}
+            value={signUpInput.confirmPassword}
           />
           <Button
             variant="contained"

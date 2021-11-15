@@ -9,18 +9,24 @@ import LoginIcon from "@mui/icons-material/Login";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import NextLink from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const SignIn = () => {
-  const [userInput, setUserInput] = useState({ email: "", password: "" });
+  // const [userInput, setUserInput] = useState({ email: "", password: "" });
 
-  const handleInputChange = (e) => {
-    setUserInput({ ...userInput, [e.target.name]: e.target.value });
-  };
+  // const handleInputChange = (e) => {
+  //   setUserInput({ ...userInput, [e.target.name]: e.target.value });
+  // };
+
+  const { signInInput, handleSignInInputChange, handleAuthentication } =
+    useContext(AuthContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("submitted", userInput);
+    // console.log("submitted", userInput);
+    console.log("submitted signInInput", signInInput);
+    handleAuthentication("SIGN_IN");
   };
 
   return (
@@ -46,7 +52,7 @@ const SignIn = () => {
         }}
       >
         <form onSubmit={handleSubmit}>
-          <Typography variant="h4" align="center" component="h1" sx={{ mb: 4 }}>
+          <Typography variant="h5" align="center" component="h1" sx={{ mb: 4 }}>
             Sign In
           </Typography>
           <TextField
@@ -65,8 +71,8 @@ const SignIn = () => {
                 </InputAdornment>
               ),
             }}
-            onChange={handleInputChange}
-            value={userInput.email}
+            onChange={handleSignInInputChange}
+            value={signInInput.email}
           />
           <TextField
             id="outlined-password"
@@ -85,8 +91,8 @@ const SignIn = () => {
                 </InputAdornment>
               ),
             }}
-            onChange={handleInputChange}
-            value={userInput.password}
+            onChange={handleSignInInputChange}
+            value={signInInput.password}
           />
           <Button
             variant="outlined"
@@ -95,7 +101,6 @@ const SignIn = () => {
             endIcon={<LoginIcon />}
             fullWidth
             sx={{ mt: 3 }}
-            // onClick={handleSubmit}
           >
             Sign Up
           </Button>
