@@ -6,11 +6,14 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from "@firebase/auth";
+import { useRouter } from "next/router";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const router = useRouter();
   // state variables
+  const [loggedInUser, setLoggedInUser] = useState(null);
   const [signInInput, setSignInInput] = useState({ email: "", password: "" });
   const [signUpInput, setSignUpInput] = useState({
     name: "",
@@ -45,9 +48,10 @@ const AuthProvider = ({ children }) => {
       try {
         await signInWithEmailAndPassword(
           auth,
-          signUpInput.email,
+          signInInput.email,
           signInInput.password
         );
+        setSignInInput({ email: "", password: "" });
       } catch (error) {
         alert(`Err in Sign In : ${error.message}`);
       }
@@ -64,6 +68,7 @@ const AuthProvider = ({ children }) => {
         if (auth.currentUser) {
           updateDisplayName(signUpInput.name);
         }
+        setSignUpInput({ name: "", email: "", password: "", confirmPass: "" });
       } catch (error) {
         alert(`Err in Sign Up : ${error.message}`);
       }
@@ -72,14 +77,20 @@ const AuthProvider = ({ children }) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("Signed In");
+        const { uid, displayName, email } = user;
+        setLoggedInUser({ uid, email, displayName });
+        router.push("/");
       } else {
         console.log("Signed Out");
+        setLoggedInUser(null);
+        router.push("/signin");
       }
-      console.log(user);
+      // console.log(user, loggedInUser);
     });
   };
 
   const values = {
+    loggedInUser,
     signInInput,
     signUpInput,
     handleSignInInputChange,

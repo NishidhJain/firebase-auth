@@ -1,7 +1,17 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
 export default function Home() {
+  const { loggedInUser } = useContext(AuthContext);
+
+  const handleLogOut = (e) => {
+    signOut(auth);
+  };
+
   return (
     <div>
       <Head>
@@ -10,7 +20,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>Home Page</main>
+      <main>
+        <h1>{loggedInUser?.displayName}</h1>
+        <button onClick={handleLogOut}>Log Out</button>
+      </main>
     </div>
   );
 }
