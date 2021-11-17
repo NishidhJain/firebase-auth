@@ -1,11 +1,12 @@
-import React, { createContext, useState } from "react";
-import { auth } from "../firebaseConfig";
+import React, { createContext, useState, useEffect } from "react";
+import { auth, db } from "../firebaseConfig";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   updateProfile,
-} from "@firebase/auth";
+} from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 
 const AuthContext = createContext();
@@ -21,6 +22,24 @@ const AuthProvider = ({ children }) => {
     password: "",
     confirmPass: "",
   });
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("Signed In");
+        const { uid, displayName, email } = user;
+        setLoggedInUser({ uid, email, displayName });
+        router.push("/");
+        getProductList(uid);
+      } else {
+        console.log("Signed Out");
+        setLoggedInUser(null);
+        router.push("/signin");
+      }
+      // console.log(user, loggedInUser);
+    });
+  }, []);
 
   // methods
   const handleSignInInputChange = (e) => {
@@ -29,6 +48,31 @@ const AuthProvider = ({ children }) => {
 
   const handleSignUpInputChange = (e) => {
     setSignUpInput({ ...signUpInput, [e.target.name]: e.target.value });
+  };
+
+  const createDbDocument = async (uid, email, displayName) => {
+    const docRef = doc(db, "users", uid);
+    try {
+      const createResult = await setDoc(docRef, {
+        email,
+        displayName,
+        productList: [],
+      });
+      console.log(createResult);
+    } catch (err) {
+      alert(`Error in creating db document : ${err.message}`);
+    }
+  };
+
+  const getProductList = async (uid) => {
+    const docRef = doc(db, "users", uid);
+    try {
+      const result = await getDoc(docRef);
+      console.log(result.data());
+      setProducts(result.data().productList);
+    } catch (err) {
+      alert(`Err in fetching products : ${err.message}`);
+    }
   };
 
   const updateDisplayName = async (name) => {
@@ -67,35 +111,28 @@ const AuthProvider = ({ children }) => {
 
         if (auth.currentUser) {
           updateDisplayName(signUpInput.name);
+          createDbDocument(
+            auth.currentUser.uid,
+            auth.currentUser.email,
+            signUpInput.name
+          );
         }
         setSignUpInput({ name: "", email: "", password: "", confirmPass: "" });
       } catch (error) {
         alert(`Err in Sign Up : ${error.message}`);
       }
     }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("Signed In");
-        const { uid, displayName, email } = user;
-        setLoggedInUser({ uid, email, displayName });
-        router.push("/");
-      } else {
-        console.log("Signed Out");
-        setLoggedInUser(null);
-        router.push("/signin");
-      }
-      // console.log(user, loggedInUser);
-    });
   };
 
   const values = {
     loggedInUser,
+    products,
     signInInput,
     signUpInput,
     handleSignInInputChange,
     handleSignUpInputChange,
     handleAuthentication,
+    getProductList,
   };
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;

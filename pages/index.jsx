@@ -1,12 +1,21 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import styles from "../styles/Home.module.css";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebaseConfig";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Home() {
-  const { loggedInUser } = useContext(AuthContext);
+  const router = useRouter();
+  const { loggedInUser, getProductList, products } = useContext(AuthContext);
+
+  console.log(products);
+
+  // useEffect(() => {
+  //   getProductList();
+  // }, []);
 
   const handleLogOut = (e) => {
     signOut(auth);
